@@ -1,0 +1,3 @@
+Global Terrorism Data Analysis :-
+
+I recently worked on global terrorism Data set and, I analyzed it using various R programming techniques. R gives the flexibility of using treemap, leaflet, histogram and graphs. I have done Text Analysis on ransom note attribute given in the data set to create a word cloud of related words and frequently occuring words. I have also created dendrogram to cluster similar words or the words which come often in pair.
