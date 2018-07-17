@@ -48,6 +48,31 @@ treemap(dfk,
         fontsize.title = 14)
 
 
+ds <- subset(df,weapdetail != "" & iyear != "")
+
+nrow(ds)
+nrow(df)
+
+head(ds$weapdetail)
+
+
+#Number of people killed and wounded using different weapons each year where,
+#size of box is proportional to number of people killed and darkness of color is 
+#proportional to number of people wounded
+treemap(ds,
+        index = c("weapdetail","iyear"),
+        type="value",
+        vSize="nkill",
+        vColor = "nwound",
+        palette="RdYlBu",
+        title="Killings in Global terrorism per weapon",
+        title.legend = "Number of wounded",
+        fontsize.title = 14)
+
+
+
+
+
 leaflet(data = dfk) %>%
   addTiles() %>% 
   addMarkers(lat=dfk$latitude, lng=dfk$longitude, clusterOptions = markerClusterOptions(),
