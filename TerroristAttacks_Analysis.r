@@ -49,13 +49,9 @@ treemap(dfk,
 
 
 ds <- subset(df,weapdetail != "" & iyear != "")
-
 nrow(ds)
 nrow(df)
-
 head(ds$weapdetail)
-
-
 #Number of people killed and wounded using different weapons each year where,
 #size of box is proportional to number of people killed and darkness of color is 
 #proportional to number of people wounded
@@ -70,8 +66,56 @@ treemap(ds,
         fontsize.title = 14)
 
 
+# Test for Variance 
+#Explosive
+dfexplosive<- subset(df,weapdetail == "Explosive" & iyear != "" & nkill != "", select = c(weapdetail,iyear,nkill))
+head(dfexplosive)
+nrow(dfexplosive)
+sum(dfexplosive$nkill)
+#Automatic firearm
+dfAutomaticfirearm<- subset(df,weapdetail == "Automatic firearm" & iyear != "" & nkill != "", select = c(weapdetail,iyear,nkill))
+head(dfAutomaticfirearm)
+nrow(dfAutomaticfirearm)
+sum(dfAutomaticfirearm$nkill)
+#Firearm
+dfFirearm<- subset(df,weapdetail == "Firearm" & iyear != "" & nkill != "", select = c(weapdetail,iyear,nkill))
+head(dfFirearm)
+nrow(dfFirearm)
+sum(dfFirearm$nkill)
+
+#normalized
+dfAutomaticfirearm[sample(nrow(dfAutomaticfirearm),4029),] -> dfAutomaticfirearmSample
+nrow(dfAutomaticfirearmSample)
+sum(dfAutomaticfirearmSample$nkill)
+
+head(dfAutomaticfirearm)
+
+dfexplosive[sample(nrow(dfexplosive),4029),] -> dfexplosiveSample
+nrow(dfexplosiveSample)
+sum(dfexplosiveSample$nkill)
+
+head(dfexplosiveSample)
 
 
+
+#combining all 3
+
+head(dfFirearm$weapdetail)
+
+a <- data.frame(b=c(dfFirearm$weapdetail,dfexplosiveSample$weapdetail,dfAutomaticfirearmSample$weapdetail))
+
+head(a)
+tail(a)
+
+x <- data.frame(y=c(dfFirearm$nkill,dfexplosiveSample$nkill,dfAutomaticfirearmSample$nkill))
+
+
+head(x)
+tail(x)
+
+finalFile <- data.frame(a,x)
+
+head(finalFile)
 
 leaflet(data = dfk) %>%
   addTiles() %>% 
