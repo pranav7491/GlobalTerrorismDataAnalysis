@@ -28,10 +28,13 @@ df <- read.csv("C:/Users/prana/OneDrive/Documents/globalterrorismdb_0617dist.csv
 head(df)
 
 df %>% filter(nkill > 0) -> dfk
+
 treemap(dfk, 
         index = c("iyear"),
         vSize="nkill",
-        palette="Blues",
+        vColor = "iyear",
+        palette=c("#ff0000","#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff","#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff"),
+        
         title="Killing in Global terrorism",
         fontsize.title = 14)
 
@@ -77,6 +80,309 @@ treemap(ds,
         title="Killings in Global terrorism per weapon",
         title.legend = "Number of wounded",
         fontsize.title = 14)
+
+
+
+
+# Test for Variance 
+#Explosive
+dfexplosive<- subset(df,weapdetail == "Explosive" & iyear != "" & nkill != "", select = c(weapdetail,iyear,nkill))
+head(dfexplosive)
+nrow(dfexplosive)
+sum(dfexplosive$nkill)
+#Automatic firearm
+dfAutomaticfirearm<- subset(df,weapdetail == "Automatic firearm" & iyear != "" & nkill != "", select = c(weapdetail,iyear,nkill))
+head(dfAutomaticfirearm)
+nrow(dfAutomaticfirearm)
+sum(dfAutomaticfirearm$nkill)
+#Firearm
+dfFirearm<- subset(df,weapdetail == "Firearm" & iyear != "" & nkill != "", select = c(weapdetail,iyear,nkill))
+head(dfFirearm)
+nrow(dfFirearm)
+sum(dfFirearm$nkill)
+
+#normalized
+dfAutomaticfirearm[sample(nrow(dfAutomaticfirearm),3000),] -> dfAutomaticfirearmSample
+nrow(dfAutomaticfirearmSample)
+sum(dfAutomaticfirearmSample$nkill)
+
+head(dfAutomaticfirearmSample)
+
+dfexplosive[sample(nrow(dfexplosive),3000),] -> dfexplosiveSample
+nrow(dfexplosiveSample)
+sum(dfexplosiveSample$nkill)
+
+head(dfexplosiveSample)
+
+
+
+dfFirearm[sample(nrow(dfFirearm),3000),] -> dfFirearmSample
+nrow(dfFirearmSample)
+sum(dfFirearmSample)
+
+head(dfFirearmSample)
+
+
+
+
+#combining all 3
+
+head(dfFirearmSample$weapdetail)
+
+a <- data.frame(b=c(dfFirearmSample$weapdetail,dfexplosiveSample$weapdetail,dfAutomaticfirearmSample$weapdetail))
+
+head(a)
+tail(a)
+
+x <- data.frame(y=c(dfFirearmSample$nkill,dfexplosiveSample$nkill,dfAutomaticfirearmSample$nkill))
+
+
+head(x)
+tail(x)
+
+finalFile <- data.frame(a,x)
+
+head(finalFile)
+
+tail(finalFile)
+
+
+AutomaticF_F <- subset(finalFile,b != "Explosive")
+
+
+head(AutomaticF_F)
+tail(AutomaticF_F)
+
+var.test(AutomaticF_F$y ~ AutomaticF_F$b, 
+         alternative = "two.sided")
+
+# F test to compare two variances
+# 
+# data:  AutomaticF_F$y by AutomaticF_F$b
+# F = 4.1479, num df = 2999, denom df = 2999, p-value < 2.2e-16
+# alternative hypothesis: true ratio of variances is not equal to 1
+# 95 percent confidence interval:
+#   3.861333 4.455766
+# sample estimates:
+#   ratio of variances 
+# 4.147915 
+
+
+
+#for 2999 degrees of freedom F value of 4.147915 is very large so population means 
+#of number of people died all over the world through Firearm and Automatic firearm 
+#cannot be equal. This means various things such as locality, impacts of weapon used
+#also come into picture. Further analysis such as country wise Analysis of variance 
+#could also be done to see whether the population density, lack of governance affects
+#number of people killed or not(crime rate in a country could be used to see governance).
+
+
+Explosive_F <- subset(finalFile,b != "Automatic firearm")
+
+
+head(Explosive_F)
+tail(Explosive_F)
+
+var.test(Explosive_F$y ~ Explosive_F$b, 
+         alternative = "two.sided")
+
+
+
+
+# data:  Explosive_F$y by Explosive_F$b
+# F = 1.4065, num df = 2999, denom df = 2999, p-value < 2.2e-16
+# alternative hypothesis: true ratio of variances is not equal to 1
+# 95 percent confidence interval:
+#   1.30930 1.51086
+# sample estimates:
+#   ratio of variances 
+# 1.406474 
+
+
+
+#Since the F ratio value is 1.4064, which falls well within the F table value 
+#for 2999 degrees of freedom. We can conclude that external parameters wont play 
+#any role in killings through Explosives and Firearm. 
+
+
+
+
+#Now checking variance for number of people wounded and killed for a type of attack in USA.
+# Test for Variance 
+#Explosive
+dfexplosive<- subset(df,weapdetail == "Explosive" & iyear != "" & nkillus != "" & nwoundus != "", select = c(weapdetail,iyear,nkillus,nwoundus))
+head(dfexplosive)
+nrow(dfexplosive)
+sum(dfexplosive$nkillus)
+sum(dfexplosive$nwoundus)
+
+# > nrow(dfexplosive)
+# [1] 624
+
+
+
+list1 <- 1:624
+list2 <- rep("Enkillus",length(list1))
+list3 <- 1:624
+list4 <- rep("Enwoundus",length(list3))
+
+head(list4)
+
+
+head(E_nkillusnwoundus)
+tail(E_nkillusnwoundus)
+nrow(E_nkillusnwoundus)
+
+E_nkill_wound_us <- data.frame(n=c(dfexplosive$nkillus,dfexplosive$nwoundus))
+
+head(E_nkill_wound_us,50)
+tail(E_nkill_wound_us,50)
+nrow(E_nkill_wound_us)
+
+Final_Data <- data.frame(E_nkillusnwoundus,E_nkill_wound_us)
+
+head(Final_Data)
+ss <- na.omit(Final_Data)
+nrow(ss)
+
+
+colnames(Final_Data)<- c("E_nkillusnwoundus","E_nkill_wound_us")
+
+
+var.test(Final_Data$E_nkill_wound_us ~ Final_Data$E_nkillusnwoundus, 
+         alternative = "two.sided")
+
+# 
+# F test to compare two variances
+# 
+# data:  Final_Data$E_nkill_wound_us by Final_Data$E_nkillusnwoundus
+# F = 0.19678, num df = 623, denom df = 623, p-value < 2.2e-16
+# alternative hypothesis: true ratio of variances is not equal to 1
+# 95 percent confidence interval:
+#   0.1681588 0.2302795
+# sample estimates:
+#   ratio of variances 
+# 0.196783
+
+
+# Since the F test value is very less for 623 degrees of freedom,
+# it could be estimated that, population means of number of people kiiled and 
+# wounded with Explosives attack in USA are equal. It indicates that most of the 
+# attacks with explosives are done in densely populated areas and not in 
+#sparsely populated areas.
+
+
+#Automatic Firearm
+dfAuto<- subset(df,weapdetail == "Automatic firearm" & iyear != "" & nkillus != "" & nwoundus != "", select = c(weapdetail,iyear,nkillus,nwoundus))
+head(dfAuto)
+nrow(dfAuto)
+sum(dfAuto$nkillus)
+sum(dfAuto$nwoundus)
+
+
+list11 <- 1:189
+list12 <- rep("Autonkillus",length(list11))
+
+list13 <- 1:189
+list14 <- rep("Autonwoundus",length(list13))
+
+
+Auto_nkill_wound_us <- data.frame(m=c(list12,list14))
+
+
+Auto_nkillwoundus <- data.frame(n=c(dfAuto$nkillus,dfAuto$nwoundus))
+
+head(Auto_nkillwoundus,50)
+tail(Auto_nkillwoundus,50)
+nrow(Auto_nkillwoundus)
+
+Final_Data2 <- data.frame(Auto_nkill_wound_us,Auto_nkillwoundus)
+
+
+colnames(Final_Data2)<- c("Auto_nkill_wound_us","Auto_nkillwoundus")
+
+
+var.test(Final_Data2$Auto_nkillwoundus ~ Final_Data2$Auto_nkill_wound_us, 
+         alternative = "two.sided")
+
+
+# 
+# F test to compare two variances
+# 
+# data:  Final_Data2$Auto_nkillwoundus by Final_Data2$Auto_nkill_wound_us
+# F = 0.13772, num df = 188, denom df = 188, p-value < 2.2e-16
+# alternative hypothesis: true ratio of variances is not equal to 1
+# 95 percent confidence interval:
+#   0.1033865 0.1834592
+# sample estimates:
+#   ratio of variances 
+# 0.1377214 
+
+
+#just like for explosive for Automatic firearms F test values is very low for 
+#623 degrees of freedom hich indicates populations means of people killed and 
+#people wounded are not equal.
+
+
+
+#Analysing Date
+
+Dataforreg <- subset(df,iday != "0" & imonth != "0" & nkill != "" & nkillus !="" & nwound !="" & nwoundus !="" ,select = c(iday,imonth,iyear,nkill,nkillus,nwound,nwoundus,country_txt))
+
+length(Dataforreg)
+
+nrow(Dataforreg)
+
+head(Dataforreg)
+
+dev.off()
+
+
+
+plot(Dataforreg$iday,Dataforreg$nkill, col ="Orange")
+
+plot(Dataforreg$imonth,Dataforreg$nkill, col = "Red")
+
+plot(Dataforreg$iyear,Dataforreg$nkill, col ="Blue")
+
+
+DataforregUSA <- subset(Dataforreg, country_txt == "United States")
+
+plot(DataforregUSA$iday , DataforregUSA$nkillus, col ="Orange")
+
+plot(DataforregUSA$imonth,DataforregUSA$nkillus, col = "Red")
+
+plot(DataforregUSA$iyear,DataforregUSA$nkillus, col ="Blue")
+
+
+
+
+#df <- na.omit(df)
+
+dff1 <- subset(df,select = c(success, targtype1_txt, country_txt))
+head(dff1)
+
+dff2 <- subset(dff1,success != "Unknown" & success != "" & success != "NA" & success != "na" &  country_txt == "United States" & targtype1_txt != ""  &
+                 targtype1_txt != "NA" & targtype1_txt != "na" & targtype1_txt != "Unknown")
+
+head(dff2)
+
+library(plyr)
+
+chisq.test(table(dff2$targtype1_txt,dff2$success))
+
+# Pearson's Chi-squared test
+# 
+# data:  table(dff2$targtype1_txt, dff2$success)
+# X-squared = 55.497, df = 20, p-value = 3.459e-05
+
+
+
+
+
+
+
+
 
 
 
@@ -258,7 +564,7 @@ fit <- hclust(d, method="ward.D")
 
 plot(fit, xaxt = 'n', yaxt='n', xlab = "Word clustering using ward.D method", ylab = "",
      
-     main="Cluster Dendogram for words used in summary description")
+     main="Cluster Dendrogram for words used in summary description")
 
 
 groups <- cutree(fit, k=5)
